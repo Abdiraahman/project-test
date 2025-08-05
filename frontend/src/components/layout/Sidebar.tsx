@@ -1,238 +1,128 @@
-// import React, { useState } from 'react';
-// import { Home, FileText, MessageSquare, Settings, LogOut, Menu, X, type LucideIcon } from 'lucide-react';
-// import { Button } from '../ui/Button';
-// type TabName = 'dashboard' | 'reports' | 'feedback' | 'settings';
-
-// interface MenuItem {
-//   id: TabName;
-//   label: string;
-//   icon: LucideIcon;
-// }
-
-// interface SidebarProps {
-//   activeTab: TabName;
-//   setActiveTab: (tab: TabName) => void;
-// }
-
-// const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
-//   const [isOpen, setIsOpen] = useState<boolean>(false);
-
-//   const menuItems: MenuItem[] = [
-//     { id: 'dashboard', label: 'Dashboard', icon: Home },
-//     { id: 'reports', label: 'Reports', icon: FileText },
-//     { id: 'feedback', label: 'Feedback', icon: MessageSquare },
-//     { id: 'settings', label: 'Settings', icon: Settings },
-//   ];
-
-//   const toggleSidebar = (): void => setIsOpen(!isOpen);
-
-//   return (
-//     <>
-//       {/* Mobile menu button */}
-//       <Button
-//         variant="ghost"
-//         size="icon"
-//         className="fixed top-4 left-4 z-50 md:hidden bg-white shadow-md"
-//         onClick={toggleSidebar}
-//       >
-//         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-//       </Button>
-
-//       {/* Overlay for mobile */}
-//       {isOpen && (
-//         <div
-//           className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-//           onClick={toggleSidebar}
-//         />
-//       )}
-
-//       {/* Sidebar */}
-//       <div
-//         className={`fixed left-0 top-0 h-full w-64 bg-navy-900 text-white transform transition-transform duration-300 ease-in-out z-50 md:translate-x-0 ${
-//           isOpen ? 'translate-x-0' : '-translate-x-full'
-//         } md:relative md:z-auto`}
-//       >
-//         {/* User Profile Section */}
-//         <div className="p-6 border-b border-navy-700">
-//           <div className="flex items-center space-x-3">
-//             <div className="w-10 h-10 bg-navy-700 rounded-full flex items-center justify-center">
-//               <span className="text-sm font-semibold">EN</span>
-//             </div>
-//             <div>
-//               <h3 className="font-semibold">Eunice</h3>
-//               <p className="text-sm text-gray-300">Nyaboke</p>
-//             </div>
-//           </div>
-//         </div>
-
-//         {/* Navigation Menu */}
-//         <nav className="flex-1 p-4">
-//           <ul className="space-y-2">
-//             {menuItems.map((item: MenuItem) => {
-//               const Icon = item.icon;
-//               return (
-//                 <li key={item.id}>
-//                   <button
-//                     onClick={() => {
-//                       setActiveTab(item.id);
-//                       setIsOpen(false); // Close mobile menu
-//                     }}
-//                     className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-//                       activeTab === item.id
-//                         ? 'bg-navy-700 text-white'
-//                         : 'text-gray-300 hover:bg-navy-800 hover:text-white'
-//                     }`}
-//                   >
-//                     <Icon className="h-5 w-5" />
-//                     <span>{item.label}</span>
-//                   </button>
-//                 </li>
-//               );
-//             })}
-//           </ul>
-//         </nav>
-
-//         {/* Logout Button */}
-//         <div className="p-4 border-t border-navy-700">
-//           <button
-//             onClick={() => {
-//               // Handle logout logic here
-//               console.log('Logout clicked');
-//             }}
-//             className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-navy-800 hover:text-white transition-colors"
-//           >
-//             <LogOut className="h-5 w-5" />
-//             <span>Log Out</span>
-//           </button>
-//         </div>
-//       </div>
-//     </>
-//   );
-// };
-
-// export default Sidebar;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import React, { useState } from 'react';
-import { Home, FileText, MessageSquare, Settings, LogOut, Menu, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-
-type TabType = 'dashboard' | 'reports' | 'feedback' | 'settings';
+import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { 
+  Home, 
+  Users, 
+  ClipboardList, 
+  MessageSquare, 
+  Settings, 
+  LogOut,
+  Menu,
+  X
+} from 'lucide-react'
 
 interface SidebarProps {
-  activeTab: TabType;
-  setActiveTab: (tab: TabType) => void;
+  isCollapsed?: boolean
+  onToggle?: () => void
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
-  const [isOpen, setIsOpen] = useState(false);
+interface NavigationItem {
+  name: string
+  path: string
+  icon: React.ComponentType<{ size?: number }>
+}
 
-  const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: Home },
-    { id: 'reports', label: 'Reports', icon: FileText },
-    { id: 'feedback', label: 'Feedback', icon: MessageSquare },
-    { id: 'settings', label: 'Settings', icon: Settings },
-  ];
+const Sidebar = ({ isCollapsed: propIsCollapsed, onToggle }: SidebarProps): React.JSX.Element => {
+  const [internalIsCollapsed, setInternalIsCollapsed] = useState<boolean>(false)
+  const location = useLocation()
+  
+  // Use prop if provided, otherwise use internal state
+  const isCollapsed = propIsCollapsed !== undefined ? propIsCollapsed : internalIsCollapsed
+  const toggleCollapsed = onToggle || (() => setInternalIsCollapsed(!internalIsCollapsed))
 
-  const toggleSidebar = () => setIsOpen(!isOpen);
+  const navigationItems: NavigationItem[] = [
+    { name: 'Dashboard', path: '/supervisor/dashboard', icon: Home },
+    { name: 'Students', path: '/supervisor/students', icon: Users },
+    { name: 'Evaluations', path: '/supervisor/evaluations', icon: ClipboardList },
+    { name: 'Feedback', path: '/supervisor/feedback', icon: MessageSquare },
+    { name: 'Profile', path: '/supervisor/profile', icon: Settings },
+  ]
+
+  const isActive = (path: string): boolean => {
+    return location.pathname === path
+  }
 
   return (
     <>
-      {/* Mobile menu button */}
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed top-4 left-4 z-50 md:hidden bg-white shadow-md"
-        onClick={toggleSidebar}
-      >
-        {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-      </Button>
-
-      {/* Overlay for mobile */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-          onClick={toggleSidebar}
+      {/* Mobile overlay */}
+      {!isCollapsed && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+          onClick={() => onToggle ? onToggle() : setInternalIsCollapsed(true)}
         />
       )}
-
+      
       {/* Sidebar */}
-      <div
-        className={`fixed left-0 top-0 h-full w-64 bg-slate-900 text-white transform transition-transform duration-300 ease-in-out z-50 md:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } md:relative md:z-auto`}
-      >
-        {/* User Profile Section */}
-        <div className="p-6 border-b border-slate-700">
-          <div className="flex items-center space-x-3">
-                          <div className="w-10 h-10 bg-slate-700 rounded-full flex items-center justify-center">
-              <span className="text-sm font-semibold">EN</span>
+      <div className={`fixed left-0 top-0 h-full bg-slate-900 text-white z-50 transition-all duration-300 ${
+        isCollapsed ? '-translate-x-full lg:translate-x-0 lg:w-16' : 'w-64'
+      }`}>
+        
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-slate-700">
+          {!isCollapsed && (
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                <span className="text-white font-semibold text-sm">IS</span>
+              </div>
+              <div>
+                <h2 className="font-semibold text-white">Industry Supervisor</h2>
+                <p className="text-sm text-slate-400">Dashboard</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-semibold">Eunice</h3>
-              <p className="text-sm text-gray-300">Nyaboke</p>
-            </div>
-          </div>
+          )}
+          
+          <button
+            onClick={toggleCollapsed}
+            className="p-2 rounded-lg hover:bg-slate-800 transition-colors lg:hidden"
+          >
+            {isCollapsed ? <Menu size={20} /> : <X size={20} />}
+          </button>
         </div>
 
-        {/* Navigation Menu */}
-        <nav className="flex-1 p-4">
+        {/* Navigation */}
+        <nav className="mt-8 px-4">
           <ul className="space-y-2">
-            {menuItems.map((item) => {
-              const Icon = item.icon;
+            {navigationItems.map((item) => {
+              const Icon = item.icon
               return (
-                <li key={item.id}>
-                  <button
-                    onClick={() => {
-                      setActiveTab(item.id as TabType);
-                      setIsOpen(false); // Close mobile menu
-                    }}
-                    className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                      activeTab === item.id
-                        ? 'bg-navy-700 text-white'
-                        : 'text-gray-300 hover:bg-navy-800 hover:text-white'
+                <li key={item.name}>
+                  <Link
+                    to={item.path}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
+                      isActive(item.path)
+                        ? 'bg-blue-600 text-white shadow-lg'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
                     }`}
+                    onClick={() => window.innerWidth < 1024 && (onToggle ? onToggle() : setInternalIsCollapsed(true))}
                   >
-                    <Icon className="h-5 w-5" />
-                    <span>{item.label}</span>
-                  </button>
+                    <Icon size={20} />
+                    {!isCollapsed && <span className="font-medium">{item.name}</span>}
+                  </Link>
                 </li>
-              );
+              )
             })}
           </ul>
         </nav>
 
-        {/* Logout Button */}
-        <div className="p-4 border-t border-slate-700">
-          <button
-            onClick={() => {
-              // Handle logout logic here
-              console.log('Logout clicked');
-            }}
-            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-navy-800 hover:text-white transition-colors"
-          >
-            <LogOut className="h-5 w-5" />
-            <span>Log Out</span>
+        {/* Sign Out */}
+        <div className="absolute bottom-6 left-4 right-4">
+          <button className="flex items-center space-x-3 w-full px-4 py-3 text-slate-300 hover:bg-slate-800 hover:text-white rounded-lg transition-colors">
+            <LogOut size={20} />
+            {!isCollapsed && <span className="font-medium">Sign Out</span>}
           </button>
         </div>
       </div>
-    </>
-  );
-};
 
-export default Sidebar;
+      {/* Toggle button for desktop */}
+      <button
+        onClick={toggleCollapsed}
+        className="fixed top-4 left-4 z-30 p-2 bg-slate-900 text-white rounded-lg hover:bg-slate-800 transition-colors hidden lg:block"
+      >
+        <Menu size={20} />
+      </button>
+    </>
+  )
+}
+
+export default Sidebar
 

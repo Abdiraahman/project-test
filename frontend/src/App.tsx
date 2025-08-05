@@ -1,210 +1,35 @@
-// // App.tsx
-// import React from 'react';
-// import StudentDashboard from './pages/dashboard/StudentDashboard';
-
-// function App() {
-//   return (
-//     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-//       {/* Header */}
-//       <div className="bg-white shadow-sm border-b">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-//           <div className="py-6">
-//             <h1 className="text-2xl font-bold text-gray-900">Internship Management System</h1>
-//             <p className="mt-1 text-sm text-gray-600">
-//               Welcome back! Here's your dashboard overview.
-//             </p>
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Main Content */}
-//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-//         <StudentDashboard />
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default App;
-
-
-
-
-
-
-
-
-
-
-
-// import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-// import { useAuth } from './hooks/auth/useAuth'
-// import MainLayout from './components/layout/MainLayout'
-// import Login from './pages/auth/Login'
-// import StudentDashboard from './pages/dashboard/StudentDashboard'
-// //import TaskList from './pages/tasks/TaskList'
-
-// function App() {
-//   const { isAuthenticated, user } = useAuth()
-
-//   if (!isAuthenticated) {
-//     return (
-//       <BrowserRouter>
-//         <Routes>
-//           <Route path="/login" element={<Login />} />
-//           <Route path="*" element={<Navigate to="/login" />} />
-//         </Routes>
-//       </BrowserRouter>
-//     )
-//   }
-
-//   return (
-//     <BrowserRouter>
-//       <MainLayout>
-//         <Routes>
-//           <Route path="/dashboard" element={<StudentDashboard />} />
-//           {/* <Route path="/tasks" element={<TaskList />} /> */}
-//           <Route path="*" element={<Navigate to="/dashboard" />} />
-//         </Routes>
-//       </MainLayout>
-//     </BrowserRouter>
-//   )
-// }
-
-// export default App
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState } from 'react';
-// import Layout from './components/layout/Layout';
-// // import Dashboard from './components/Dashboard';
-// // import Reports from './components/Reports';
-// // import Feedback from './components/Feedback';
-// import Settings from './components/layout/Settings';
-// import StudentDashboard from './pages/dashboard/StudentDashboard';
-
-// type TabName = 'dashboard' | 'reports' | 'feedback' | 'settings';
-
-// const App: React.FC = () => {
-//   const [activeTab, setActiveTab] = useState<TabName>('dashboard');
-
-//   const renderContent = (): React.ReactNode => {
-//     switch (activeTab) {
-//       case 'dashboard':
-//         return <StudentDashboard />;
-//       // case 'reports':
-//       //   return <Reports />;
-//       // case 'feedback':
-//       //   return <Feedback />;
-//       case 'settings':
-//         return <Settings />;
-//       default:
-//         return <StudentDashboard />;
-//     }
-//   };
-
-//   return (
-//     <Layout activeTab={activeTab} setActiveTab={setActiveTab}>
-//       {renderContent()}
-//     </Layout>
-//   );
-// };
-
-// export default App;
-
-
-
-
-
-
-// // // src/App.tsx
-// // import React from 'react';
-// // import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-// // import Login from './pages/auth/Login';
-// // import Register from './pages/auth/Register';
-// // import Dashboard from './pages/dashboard/Dashboard'; // Your existing dashboard
-// // import SupervisorDashboard from './pages/dashboard/SupervisorDashboard'; // Supervisor dashboard
-
-
-// // const App: React.FC = () => {
-// //   return (
-// //     <Router>
-// //       <Routes>
-// //         <Route path="/" element={<Navigate to="/auth/login" replace />} />
-// //         <Route path="/auth/login" element={<Login />} />
-// //         <Route path="/auth/register" element={<Register />} />
-// //         <Route path="/dashboard" element={<Dashboard />} />
-// //         <Route path="/SupervisorDashboard" element={<SupervisorDashboard />} />
-        
-// //         {/* Add more routes as needed */}
-// //       </Routes>
-// //     </Router>
-// //   );
-// // };
-
-// // export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import React, { useState } from 'react';
-import MainLayout from './components/layout/MainLayout';
-import StudentDashboard from './pages/dashboard/StudentDashboard';
-import DailyReport from './pages/tasks/DailyReport';
-import WeeklyReview from './pages/feedback/WeeklyReview';
-import ProfileEdit from './pages/profile/ProfileEdit';
-//import './App.css';
-
-type TabType = 'dashboard' | 'reports' | 'feedback' | 'settings';
-
-function App(): React.ReactElement {
-  const [activeTab, setActiveTab] = useState<TabType>('dashboard');
-
-  const renderContent = (): React.ReactElement => {
-    switch (activeTab) {
-      case 'dashboard':
-        return <StudentDashboard />;
-      case 'reports':
-        return <DailyReport />;
-      case 'feedback':
-        return <WeeklyReview />;
-      case 'settings':
-        return <ProfileEdit />;
-      default:
-        return <StudentDashboard />;
-    }
-  };
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import MainLayout from './components/layout/MainLayout'
+import SupervisorDashboard from './pages/dashboard/SupervisorDashboard'
+import StudentProgress from './components/features/supervisors/StudentProgress'
+import EvaluationForm from './components/features/supervisors/EvaluationForm'
+import WeeklyFeedback from './components/features/supervisors/WeeklyFeedback'
+import ProfileEdit from './pages/profile/ProfileEdit'
+import ProfileSetup from './pages/profile/ProfileSetup'
+import './App.css'
+
+function App(): React.JSX.Element {
   return (
-    <MainLayout activeTab={activeTab} setActiveTab={setActiveTab}>
-      {renderContent()}
-    </MainLayout>
-  );
+    <Router>
+      <Routes>
+        {/* Profile setup route (standalone, no layout) */}
+        <Route path="/profile-setup" element={<ProfileSetup />} />
+        
+        {/* Supervisor dashboard routes with layout */}
+        <Route path="/supervisor" element={<MainLayout />}>
+          <Route index element={<SupervisorDashboard />} />
+          <Route path="dashboard" element={<SupervisorDashboard />} />
+          <Route path="students" element={<StudentProgress />} />
+          <Route path="evaluations" element={<EvaluationForm />} />
+          <Route path="feedback" element={<WeeklyFeedback />} />
+          <Route path="profile" element={<ProfileEdit />} />
+        </Route>
+        
+        {/* Redirect root to supervisor dashboard for now */}
+        <Route path="/" element={<SupervisorDashboard />} />
+      </Routes>
+    </Router>
+  )
 }
 
-export default App;
+export default App
