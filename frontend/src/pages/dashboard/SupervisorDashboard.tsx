@@ -1,17 +1,16 @@
-import React from 'react';
-import { Users, ClipboardList, MessageSquare, TrendingUp } from 'lucide-react';
-import { type StatCard } from '../../types/common';
+import { Users, ClipboardList, MessageSquare, TrendingUp } from 'lucide-react'
 
-interface Activity {
-  id: number;
-  student: string;
-  action: string;
-  time: string;
-  status: 'pending' | 'completed' | 'active' | 'reviewed';
+interface Stat {
+  title: string
+  value: string
+  change: string
+  changeType: 'positive' | 'negative'
+  icon: React.ComponentType<{ size?: number; className?: string }>
+  color: string
 }
 
-const SupervisorDashboard: React.FC = () => {
-  const stats: StatCard[] = [
+const SupervisorDashboard = (): React.JSX.Element => {
+  const stats: Stat[] = [
     {
       title: 'Total Students',
       value: '24',
@@ -44,9 +43,9 @@ const SupervisorDashboard: React.FC = () => {
       icon: TrendingUp,
       color: 'bg-purple-500'
     }
-  ];
+  ]
 
-  const recentActivities: Activity[] = [
+  const recentActivities = [
     {
       id: 1,
       student: 'John Doe',
@@ -75,24 +74,29 @@ const SupervisorDashboard: React.FC = () => {
       time: '2 days ago',
       status: 'reviewed'
     }
-  ];
+  ]
 
-  const getStatusColor = (status: Activity['status']): string => {
-    const colors = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      completed: 'bg-green-100 text-green-800',
-      active: 'bg-blue-100 text-blue-800',
-      reviewed: 'bg-purple-100 text-purple-800'
-    };
-    return colors[status];
-  };
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'completed':
+        return 'bg-green-100 text-green-800'
+      case 'active':
+        return 'bg-blue-100 text-blue-800'
+      case 'reviewed':
+        return 'bg-purple-100 text-purple-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
 
   return (
     <div className="space-y-6">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, index) => {
-          const Icon = stat.icon;
+          const Icon = stat.icon
           return (
             <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
@@ -110,7 +114,7 @@ const SupervisorDashboard: React.FC = () => {
                 </div>
               </div>
             </div>
-          );
+          )
         })}
       </div>
 
@@ -137,7 +141,7 @@ const SupervisorDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick Actions and Other Sections */}
+      {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <h4 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h4>
@@ -218,7 +222,8 @@ const SupervisorDashboard: React.FC = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default SupervisorDashboard;
+export default SupervisorDashboard
+
